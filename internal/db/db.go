@@ -16,16 +16,17 @@ type DB struct {
 
 // Интерфейс, содержащий методы для работы с БД.
 type Querier interface {
-	New(username string, url string, shorty string) error
-	ListShorties(username string) ([]Shorties, error)
+	UsersAndShorties() (int, int, error)
+	New(userID int64, url string, shorty string) error
+	ListShorties(userID int64) ([]Shorties, error)
 	ShortyInfo(shortyURL string) (Shorties, error)
 	DeleteShorty(shortyURL string) error
 }
 
 // Модель для работы с БД.
 type Shorties struct {
-	ID          uint      `gorm:"primaryKey;not null;autoIncrement"`
-	Username    string    `gorm:"not null"`
+	ID          int64     `gorm:"primaryKey;not null;autoIncrement"`
+	UserID      int64     `gorm:"not null"`
 	OriginalURL string    `gorm:"not null"`
 	ShortyURL   string    `gorm:"not null;unique"`
 	DateCreated time.Time `gorm:"not null"`
@@ -57,11 +58,34 @@ func InitDB() (*DB, error) {
 	return &DB{db: db}, nil
 }
 
-// Создает новую запись в БД. Используется в функции handlers.New.
-func (d *DB) New(username string, url string, shorty string) error {
+func (d *DB) UsersAndShorties() (int, int, error) {
+	var usersCount int64
 	var shortiesCount int64
 
-	t := d.db.Table("shorties").Where("username = ?", username).Where("original_url = ?", url).Count(&shortiesCount)
+	t := d.db.Table("shorties").Distinct("user_id").Count(&usersCount)
+	if usersCount == 0 {
+		return 0, 0, gorm.ErrRecordNotFound
+	}
+	if t.Error != nil && t.Error != gorm.ErrRecordNotFound {
+		return 0, 0, t.Error
+	}
+
+	t = d.db.Table("shorties").Count(&shortiesCount)
+	if shortiesCount == 0 {
+		return 0, 0, gorm.ErrRecordNotFound
+	}
+	if t.Error != nil && t.Error != gorm.ErrRecordNotFound {
+		return 0, 0, t.Error
+	}
+
+	return int(usersCount), int(shortiesCount), nil
+}
+
+// Создает новую запись в БД. Используется в функции handlers.New.
+func (d *DB) New(userID int64, url string, shorty string) error {
+	var shortiesCount int64
+
+	t := d.db.Table("shorties").Where("user_id = ?", userID).Where("original_url = ?", url).Count(&shortiesCount)
 	if shortiesCount != 0 {
 		return gorm.ErrDuplicatedKey
 	}
@@ -69,7 +93,7 @@ func (d *DB) New(username string, url string, shorty string) error {
 		return t.Error
 	}
 
-	t = d.db.Table("shorties").Where("username = ?", username).Count(&shortiesCount)
+	t = d.db.Table("shorties").Where("user_id = ?", userID).Count(&shortiesCount)
 	if shortiesCount >= 5 {
 		return gorm.ErrCheckConstraintViolated
 	}
@@ -78,7 +102,7 @@ func (d *DB) New(username string, url string, shorty string) error {
 	}
 
 	t = d.db.Table("shorties").Create(&Shorties{
-		Username:    username,
+		UserID:      userID,
 		OriginalURL: url,
 		ShortyURL:   shorty,
 		DateCreated: time.Now().UTC(),
@@ -91,10 +115,10 @@ func (d *DB) New(username string, url string, shorty string) error {
 }
 
 // Возвращает все доступные цитаты по имени пользователя. Используется в функциях handlers.ListShorties и handlers.DeleteShorty.
-func (d *DB) ListShorties(username string) ([]Shorties, error) {
+func (d *DB) ListShorties(userID int64) ([]Shorties, error) {
 	var shorties []Shorties
 
-	t := d.db.Table("shorties").Where("username = ?", username).Find(&shorties)
+	t := d.db.Table("shorties").Where("user_id = ?", userID).Find(&shorties)
 	if len(shorties) == 0 {
 		return []Shorties{}, gorm.ErrRecordNotFound
 	}

@@ -3,6 +3,20 @@ package models
 import "gopkg.in/telebot.v4"
 
 var (
+	// Кнопка "Вернуться к панели". Появляется в действиях из админской панели.
+	BtnReturnToAdminPanel = telebot.InlineButton{
+		Unique: "adminPanel",
+		Text:   "Вернуться к панели",
+	}
+
+	// Кнопка "Счетчик пользователей и ссылок". Появляется в админской панели.
+	BtnAdminUsersAndShorties = telebot.InlineButton{
+		Unique: "adminUsersAndShorties",
+		Text:   "Счетчик пользователей и ссылок",
+	}
+)
+
+var (
 	// Кнопка "Мои Shorties". Появляется в главном меню.
 	BtnListShorties = telebot.InlineButton{
 		Unique: "listShorties",
@@ -55,6 +69,22 @@ var (
 )
 
 var (
+	// Набор кнопок, отображаемый в админской панели.
+	ReplyAdminPanel = &telebot.ReplyMarkup{
+		InlineKeyboard: [][]telebot.InlineButton{
+			{BtnAdminUsersAndShorties},
+		},
+	}
+
+	// Набор кнопок, отображаемый, как предложение вернуться к админской панели.
+	ReplyReturnToAdminPanel = &telebot.ReplyMarkup{
+		InlineKeyboard: [][]telebot.InlineButton{
+			{BtnReturnToAdminPanel},
+		},
+	}
+)
+
+var (
 	// Набор кнопок, отображаемый, как предложение вернуться к списку сокращенных ссылок.
 	ReplyReturnToListShorties = &telebot.ReplyMarkup{
 		InlineKeyboard: [][]telebot.InlineButton{
@@ -80,9 +110,9 @@ var (
 	}
 
 	// Набор кнопок, отображаемый, как предложение вернуться в главное меню. Дополнительно имеет при себе данные, которые свидетельствуют о том, что пользователь решил вернуться в главное меню после какого-то неудачного действия.
-	ReplyReturnToMenuWithError = &telebot.ReplyMarkup{
+	ReplyReturnToMenuWithSend = &telebot.ReplyMarkup{
 		InlineKeyboard: [][]telebot.InlineButton{
-			{*BtnReturnToMenu.With("failed")},
+			{*BtnReturnToMenu.With("send")},
 		},
 	}
 )

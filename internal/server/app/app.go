@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/xoticdsign/shortybot/internal/db"
+	"github.com/xoticdsign/shortybot/internal/logger"
 	"github.com/xoticdsign/shortybot/internal/server/handlers"
 )
 
@@ -16,8 +17,11 @@ func InitApp() (*fiber.App, error) {
 		return nil, err
 	}
 
+	logger := logger.InitLogger()
+
 	handlers := &handlers.Dependencies{
-		DB: db,
+		DB:     db,
+		Logger: logger,
 	}
 
 	app := fiber.New(fiber.Config{

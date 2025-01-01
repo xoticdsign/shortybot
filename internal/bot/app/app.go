@@ -11,6 +11,7 @@ import (
 	"github.com/xoticdsign/shortybot/internal/bot/middleware"
 	"github.com/xoticdsign/shortybot/internal/bot/models"
 	"github.com/xoticdsign/shortybot/internal/db"
+	"github.com/xoticdsign/shortybot/internal/logger"
 )
 
 // Инициализирует бота, возвращает структуру *telebot.Bot или одну из возможных ошибок.
@@ -20,8 +21,11 @@ func InitApp() (*telebot.Bot, error) {
 		return nil, err
 	}
 
+	logger := logger.InitLogger()
+
 	handlers := &handlers.Dependencies{
 		DB:      db,
+		Logger:  logger,
 		Helpers: helpers.Helpers{},
 	}
 
@@ -37,7 +41,14 @@ func InitApp() (*telebot.Bot, error) {
 		return nil, err
 	}
 
-	bot.Use(middleware.GetUserDetails)
+	bot.Use(middleware.GetSenderDetails)
+	bot.Use(middleware.AdminValidation)
+	bot.Use(middleware.SpeedCounter)
+
+	admin := bot.Group()
+
+	admin.Handle(&models.BtnReturnToAdminPanel, handlers.AdminPanel)
+	admin.Handle(&models.BtnAdminUsersAndShorties, handlers.AdminUsersAndShorties)
 
 	unsupported := bot.Group()
 
