@@ -40,6 +40,13 @@ func (d *Dependencies) AdminPanel(c telebot.Context) error {
 		return telebot.ErrBadContext
 	}
 
+	_, ok = c.Get("admin").(string)
+	if !ok {
+		c.Delete()
+
+		return c.Send(models.FailedGlobalUnsupportedCmd, models.ReplyReturnToMenuWithSend)
+	}
+
 	if c.Callback() != nil {
 		data = c.Callback().Data
 	}
@@ -70,9 +77,16 @@ func (d *Dependencies) AdminPanel(c telebot.Context) error {
 
 // Админский хендлер. Отправляет количество уникальных пользователей и сокращенных ссылок.
 func (d *Dependencies) AdminUsersAndShorties(c telebot.Context) error {
+	_, ok := c.Get("admin").(string)
+	if !ok {
+		c.Delete()
+
+		return c.Send(models.FailedGlobalUnsupportedCmd, models.ReplyReturnToMenuWithSend)
+	}
+
 	usersCount, shortiesCount, err := d.DB.UsersAndShorties()
 	if err != nil {
-		return c.EditOrSend(models.MsgAdminSuccess+"\n"+err.Error(), models.ReplyReturnToAdminPanel)
+		return c.EditOrSend(models.MsgAdminSuccess+"\n\n"+err.Error(), models.ReplyReturnToAdminPanel)
 	}
 	result := []string{
 		models.MsgAdminSuccess,
