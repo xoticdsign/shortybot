@@ -43,6 +43,14 @@ func (d *Dependencies) OnError(c *fiber.Ctx, err error) error {
 	})
 }
 
+// Root хендлер.
+func (d *Dependencies) Root(c *fiber.Ctx) error {
+	return c.JSON(models.Error{
+		Code:    200,
+		Message: "OK",
+	})
+}
+
 // Достает оригинальную ссылку из БД и редиректит запросы.
 func (d *Dependencies) Redirect(c *fiber.Ctx) error {
 	start := time.Now()

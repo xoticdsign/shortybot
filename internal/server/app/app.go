@@ -34,6 +34,7 @@ func InitApp() (*fiber.App, error) {
 		AppName:       "shortyserver",
 	})
 
+	app.Get("/", handlers.Root)
 	app.Get("/:shortyURL", handlers.Redirect)
 
 	return app, nil

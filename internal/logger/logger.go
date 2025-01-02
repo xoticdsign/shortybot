@@ -122,7 +122,7 @@ func (l *Logger) WarnServer(msg string, shortyURL string, originalURL string, st
 
 // Логгирует Error на сервере.
 func (l *Logger) ErrorServer(msg string, code int) {
-	l.logger.Warn().
+	l.logger.Error().
 		Int("CODE", code).
 		Msg(msg)
 }
