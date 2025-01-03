@@ -46,7 +46,7 @@ func (d *Dependencies) OnError(c *fiber.Ctx, err error) error {
 	)
 
 	return c.JSON(&models.Error{
-		Message: "something went wrong: " + e.Error(),
+		Message: "something went wrong: " + err.Error(),
 		Status: &models.Status{
 			Code:    fiber.ErrInternalServerError.Code,
 			Message: fiber.ErrInsufficientStorage.Message,
