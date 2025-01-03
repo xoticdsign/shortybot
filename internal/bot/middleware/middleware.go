@@ -18,6 +18,7 @@ func GetSenderDetails(next telebot.HandlerFunc) telebot.HandlerFunc {
 	}
 }
 
+// Проверяет, является ли пользователь админом.
 func AdminValidation(next telebot.HandlerFunc) telebot.HandlerFunc {
 	return func(c telebot.Context) error {
 		admins := os.Getenv("BOT_ADMINS")
@@ -30,6 +31,7 @@ func AdminValidation(next telebot.HandlerFunc) telebot.HandlerFunc {
 	}
 }
 
+// Счетчик скорости.
 func SpeedCounter(next telebot.HandlerFunc) telebot.HandlerFunc {
 	return func(c telebot.Context) error {
 		c.Set("start", time.Now())

@@ -27,8 +27,8 @@ var (
 )
 
 var (
-	OriginBot    = "Bot"
-	OriginServer = "Server"
+	OriginBot    = "BOT"
+	OriginServer = "SERVER"
 )
 
 // Структура, хранящая переменную для доступа к логгеру. Также реализует Loggier.
