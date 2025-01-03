@@ -105,6 +105,7 @@ func (l *Logger) InfoServer(msg string, origin string, shortyURL string, origina
 	}
 
 	l.logger.Info().
+		Str("ORIGIN", origin).
 		Str("SHORTY", shortyURL).
 		Str("REDIRECT", originalURL).
 		TimeDiff("SPEED", time.Now(), start).
@@ -114,6 +115,7 @@ func (l *Logger) InfoServer(msg string, origin string, shortyURL string, origina
 // Логгирует Warning на сервере.
 func (l *Logger) WarnServer(msg string, origin string, shortyURL string, originalURL string, start time.Time) {
 	l.logger.Warn().
+		Str("ORIGIN", origin).
 		Str("SHORTY", shortyURL).
 		Str("REDIRECT", originalURL).
 		TimeDiff("SPEED", time.Now(), start).
@@ -124,5 +126,6 @@ func (l *Logger) WarnServer(msg string, origin string, shortyURL string, origina
 func (l *Logger) ErrorServer(msg string, origin string, code int) {
 	l.logger.Error().
 		Int("CODE", code).
+		Str("ORIGIN", origin).
 		Msg(msg)
 }
