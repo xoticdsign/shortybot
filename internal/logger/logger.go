@@ -41,9 +41,9 @@ type Loggier interface {
 	InfoBot(msg string, origin string, from string, userID int64, username string, start time.Time)
 	WarnBot(msg string, origin string, from string, userID int64, username string, start time.Time)
 	ErrorBot(msg string, origin string)
-	InfoServer(msg string, shortyURL string, originalURL string, start time.Time)
-	WarnServer(msg string, shortyURL string, originalURL string, start time.Time)
-	ErrorServer(msg string, code int)
+	InfoServer(msg string, origin string, shortyURL string, originalURL string, start time.Time)
+	WarnServer(msg string, origin string, shortyURL string, originalURL string, start time.Time)
+	ErrorServer(msg string, origin string, code int)
 }
 
 // Инициализирует логгер, возвращает структуру *Logger.
@@ -99,9 +99,9 @@ func (l *Logger) ErrorBot(msg string, origin string) {
 }
 
 // Логгирует Info на сервере.
-func (l *Logger) InfoServer(msg string, shortyURL string, originalURL string, start time.Time) {
+func (l *Logger) InfoServer(msg string, origin string, shortyURL string, originalURL string, start time.Time) {
 	if time.Since(start) >= time.Duration(time.Second*2) {
-		l.WarnServer(WarnTooLong, shortyURL, originalURL, start)
+		l.WarnServer(WarnTooLong, origin, shortyURL, originalURL, start)
 	}
 
 	l.logger.Info().
@@ -112,7 +112,7 @@ func (l *Logger) InfoServer(msg string, shortyURL string, originalURL string, st
 }
 
 // Логгирует Warning на сервере.
-func (l *Logger) WarnServer(msg string, shortyURL string, originalURL string, start time.Time) {
+func (l *Logger) WarnServer(msg string, origin string, shortyURL string, originalURL string, start time.Time) {
 	l.logger.Warn().
 		Str("SHORTY", shortyURL).
 		Str("REDIRECT", originalURL).
@@ -121,7 +121,7 @@ func (l *Logger) WarnServer(msg string, shortyURL string, originalURL string, st
 }
 
 // Логгирует Error на сервере.
-func (l *Logger) ErrorServer(msg string, code int) {
+func (l *Logger) ErrorServer(msg string, origin string, code int) {
 	l.logger.Error().
 		Int("CODE", code).
 		Msg(msg)

@@ -27,6 +27,7 @@ func (d *Dependencies) OnError(c *fiber.Ctx, err error) error {
 	if errors.As(err, &e) {
 		d.Logger.ErrorServer(
 			e.Error(),
+			logger.OriginServer,
 			e.Code,
 		)
 
@@ -40,6 +41,7 @@ func (d *Dependencies) OnError(c *fiber.Ctx, err error) error {
 	}
 	d.Logger.ErrorServer(
 		err.Error(),
+		logger.OriginServer,
 		fiber.ErrInternalServerError.Code,
 	)
 
@@ -81,6 +83,7 @@ func (d *Dependencies) Redirect(c *fiber.Ctx) error {
 	}
 	d.Logger.InfoServer(
 		logger.InfoRequestFulfilled,
+		logger.OriginServer,
 		os.Getenv("SERVER_PUBLIC_ADR")+shorty.ShortyURL,
 		shorty.OriginalURL,
 		start,
