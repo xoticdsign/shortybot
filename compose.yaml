@@ -1,0 +1,64 @@
+services:
+  shortybot:
+    build: 
+      context: ./
+      dockerfile: ./cmd/bot/Dockerfile
+    image: shortybot
+    container_name: shortybot
+    command: ./shortybot
+    environment:
+      ENV: production
+      BOT_TOKEN: ${BOT_TOKEN}
+      BOT_ADMINS: ${BOT_ADMINS}
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DB: ${DB_DB}
+      DB_PORT: ${DB_PORT}
+      SERVER_PUBLIC_ADR: ${SERVER_PUBLIC_ADR}
+    restart: on-failure:5
+    networks:
+      - shortynetwork
+    depends_on:
+      - shortydb
+
+  shortyserver:
+    build:
+      context: ./
+      dockerfile: ./cmd/server/Dockerfile
+    image: shortyserver
+    container_name: shortyserver
+    command: ./shortyserver
+    environment:
+      ENV: production
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DB: ${DB_DB}
+      DB_PORT: ${DB_PORT}
+      SERVER_ADR: ${SERVER_ADR}
+    restart: on-failure:5
+    networks:
+      - shortynetwork
+    ports:
+      - 8080:8080
+    depends_on:
+      - shortydb
+
+  shortydb:
+    image: postgres:17.2
+    container_name: shortydb
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DB}
+    restart: on-failure:5
+    networks:
+      - shortynetwork
+    ports:
+      - 5432:5432
+    
+networks:
+  shortynetwork:
+
+

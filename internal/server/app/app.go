@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -13,9 +14,19 @@ import (
 
 // Инициализирует сервер, возвращает структуру *fiber.App или одну из возможных ошибок.
 func InitApp() (*fiber.App, error) {
-	dsn := os.Getenv("DB_DSN")
+	dbHost := os.Getenv("DB_HOST")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbDb := os.Getenv("DB_DB")
+	dbPort := os.Getenv("DB_PORT")
 
-	defer os.Unsetenv("DB_DSN")
+	defer os.Unsetenv("DB_HOST")
+	defer os.Unsetenv("DB_USER")
+	defer os.Unsetenv("DB_PASSWORD")
+	defer os.Unsetenv("DB_DB")
+	defer os.Unsetenv("DB_PORT")
+
+	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v", dbHost, dbUser, dbPassword, dbDb, dbPort)
 
 	db, err := db.InitDB(dsn)
 	if err != nil {
