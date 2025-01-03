@@ -10,7 +10,13 @@ import (
 )
 
 func main() {
-	if os.Getenv("ENV") != "production" {
+	env := os.Getenv("ENV")
+	adr := os.Getenv("SERVER_ADR")
+
+	defer os.Unsetenv("ENV")
+	defer os.Unsetenv("SERVER_ADR")
+
+	if env != "production" {
 		godotenv.Load()
 	}
 
@@ -19,7 +25,7 @@ func main() {
 		log.Fatalf(" ERR %v", err)
 	}
 
-	err = app.Listen(os.Getenv("SERVER_ADR"))
+	err = app.Listen(adr)
 	if err != nil {
 		log.Fatalf(" ERR %v", err)
 	}

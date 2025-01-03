@@ -10,7 +10,11 @@ import (
 )
 
 func main() {
-	if os.Getenv("ENV") != "production" {
+	env := os.Getenv("ENV")
+
+	defer os.Unsetenv("ENV")
+
+	if env != "production" {
 		godotenv.Load()
 	}
 

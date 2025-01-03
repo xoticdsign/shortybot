@@ -1,6 +1,7 @@
 package app
 
 import (
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,7 +13,11 @@ import (
 
 // Инициализирует сервер, возвращает структуру *fiber.App или одну из возможных ошибок.
 func InitApp() (*fiber.App, error) {
-	db, err := db.InitDB()
+	dsn := os.Getenv("DB_DSN")
+
+	defer os.Unsetenv("DB_DSN")
+
+	db, err := db.InitDB(dsn)
 	if err != nil {
 		return nil, err
 	}

@@ -16,7 +16,13 @@ import (
 
 // Инициализирует бота, возвращает структуру *telebot.Bot или одну из возможных ошибок.
 func InitApp() (*telebot.Bot, error) {
-	db, err := db.InitDB()
+	token := os.Getenv("BOT_TOKEN")
+	dsn := os.Getenv("DB_DSN")
+
+	defer os.Unsetenv("BOT_TOKEN")
+	defer os.Unsetenv("DB_DSN")
+
+	db, err := db.InitDB(dsn)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +36,7 @@ func InitApp() (*telebot.Bot, error) {
 	}
 
 	bot, err := telebot.NewBot(telebot.Settings{
-		Token: os.Getenv("BOT_TOKEN"),
+		Token: token,
 		Poller: &telebot.LongPoller{
 			Limit:   50,
 			Timeout: time.Second * 15,

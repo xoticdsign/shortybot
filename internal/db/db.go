@@ -1,7 +1,6 @@
 package db
 
 import (
-	"os"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -33,8 +32,8 @@ type Shorties struct {
 }
 
 // Инициализирует БД, возвращает структуру *DB или одну из возможных ошибок.
-func InitDB() (*DB, error) {
-	db, err := gorm.Open(postgres.Open(os.Getenv("DB_DSN")), &gorm.Config{
+func InitDB(dsn string) (*DB, error) {
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
