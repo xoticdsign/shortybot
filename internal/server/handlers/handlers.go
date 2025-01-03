@@ -30,24 +30,36 @@ func (d *Dependencies) OnError(c *fiber.Ctx, err error) error {
 			e.Code,
 		)
 
-		return c.JSON(e)
+		return c.JSON(&models.Error{
+			Message: "something went wrong: " + e.Error(),
+			Status: &models.Status{
+				Code:    e.Code,
+				Message: e.Message,
+			},
+		})
 	}
 	d.Logger.ErrorServer(
 		err.Error(),
-		0,
+		fiber.ErrInternalServerError.Code,
 	)
 
-	return c.JSON(models.Error{
-		Code:    0,
-		Message: err.Error(),
+	return c.JSON(&models.Error{
+		Message: "something went wrong: " + e.Error(),
+		Status: &models.Status{
+			Code:    fiber.ErrInternalServerError.Code,
+			Message: fiber.ErrInsufficientStorage.Message,
+		},
 	})
 }
 
 // Root хендлер.
 func (d *Dependencies) Root(c *fiber.Ctx) error {
-	return c.JSON(models.Error{
-		Code:    200,
-		Message: "OK",
+	return c.JSON(&models.Response{
+		Message: "Server is ^",
+		Status: &models.Status{
+			Code:    fiber.StatusOK,
+			Message: "OK",
+		},
 	})
 }
 
