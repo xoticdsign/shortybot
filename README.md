@@ -1,6 +1,6 @@
 # 🔗 shortybot
 
-**shortybot** is a link shortening service in the format of a Telegram bot.
+**Shortybot** is a link shortening service in the format of a Telegram bot.
 
 A simple and convenient interface, human-friendly and informative responses, and functionality that allows all necessary actions — **shortybot**!
 
@@ -22,7 +22,7 @@ Shortened links are accessible only to you. The bot uses a unique identifier lin
 
 ## Implementation Details
 
-**shortybot** consists of two main components:
+**Shortybot** consists of two main components:
 
 **Bot:**  
 Responsible for interacting with the user through Telegram, including processing requests, creating links, and managing them.
