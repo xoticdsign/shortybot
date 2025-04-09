@@ -1,65 +1,53 @@
 # 🔗 shortybot
 
-**shortybot** - это сервис сокращения ссылок в формате телеграм-бота.
+**shortybot** is a link shortening service in the format of a Telegram bot.
 
-Простой и удобный интерфейс, очеловеченные и содержательные ответы, функционал, позволяющий осуществлять все необходимые действия - **shortybot**!
+A simple and convenient interface, human-friendly and informative responses, and functionality that allows all necessary actions — **shortybot**!
 
 <img src="https://github.com/user-attachments/assets/37b7bb53-8e76-4d63-8728-3cccf64bf67f">
 
-## Основные функции
+## Main Features
 
-- **Сокращение ссылок:**   
-Просто отправьте ссылку боту, и он создаст сокращенную версию.
+- **Link Shortening:**  
+Simply send a link to the bot, and it will create a shortened version.
 
-- **Хранение сокращенных ссылок:**   
-Все ваши сокращенные ссылки автоматически сохраняются. Вы можете просмотреть их в разделе «Мои Shorties», где будет доступна информация о дате создания.
+- **Storage of Shortened Links:**  
+All your shortened links are automatically saved. You can view them in the "My Shorties" section, where creation date information will be available.
 
-- **Удаление сокращенных ссылок:**   
-Если сокращенная ссылка больше не нужна, ее можно удалить через раздел «Удалить Shorty».
+- **Deleting Shortened Links:**  
+If a shortened link is no longer needed, it can be deleted via the "Delete Shorty" section.
 
-- **Безопасность:**   
-Сокращенные ссылки доступны только вам. Бот использует уникальный идентификатор, связанный с вашим Телеграм-аккаунтом, для защиты данных.
+- **Security:**  
+Shortened links are accessible only to you. The bot uses a unique identifier linked to your Telegram account to protect your data.
 
----
+## Implementation Details
 
-## Детали реализации
+**shortybot** consists of two main components:
 
-**shortybot** состоит из двух основных компонентов:
+**Bot:**  
+Responsible for interacting with the user through Telegram, including processing requests, creating links, and managing them.
 
-**Бот:**   
-Отвечает за взаимодействие с пользователем через Telegram, включая обработку запросов, создание ссылок и управление ими.
+**Server:**  
+Handles incoming GET requests with unique shortened link identifiers, retrieves information from the database, and redirects the user to the original URL.
 
-**Сервер:**   
-Обрабатывает входящие GET-запросы с уникальными идентификаторами сокращенных ссылок, извлекает информацию из базы данных и перенаправляет пользователя на оригинальный URL.
+### How does it work?
 
-### Как это работает?
+1. The user sends a link to the bot to shorten.  
+2. The bot saves a record in the database, including:  
+   - A unique Telegram user ID.  
+   - The original link.  
+   - A unique shortened link ID.  
+   - The creation date.  
+3. The user follows the shortened link.  
+4. The server receives the request, extracts the identifier, queries the database, and redirects to the original URL.
 
-1. Пользователь отправляет ссылку боту для сокращения.
-2. Бот сохраняет запись в базе данных, включая:
-- Уникальный идентификатор Телеграм-пользователя.
-- Оригинальную ссылку.
-- Уникальный идентификатор сокращенной ссылки.
-- Дату создания.
-4. Пользователь переходит по сокращенной ссылке.
-5. Сервер получает запрос, извлекает идентификатор, обращается к базе данных и выполняет редирект на оригинальный URL.
+### Limitations
 
-### Ограничения
+- You cannot create two shortened links for the same original link.  
+- You cannot shorten an already shortened link.  
+- You cannot shorten a non-working link.
 
-- Нельзя создать две сокращенные ссылки для одной и той же оригинальной ссылки.
-- Нельзя сократить уже сокращенную ссылку.
-- Нельзя сократить нерабочую ссылку.
-
-## Технологии
-
-- [**Go**](https://go.dev/) - основной язык разработки.
-- [**Fiber**](https://docs.gofiber.io/) - веб-фреймворк для сервера.
-- [**Telebot**](https://github.com/tucnak/telebot) - библиотека для работы с Телеграм-ботом.
-- [**PostgreSQL**](https://www.postgresql.org/) - база данных.
-- [**GORM**](https://gorm.io/) - ORM для взаимодействия с базой данных.
-- [**Zerolog**](https://github.com/rs/zerolog) - для структурированного логгирования.
-- [**Docker**](https://www.docker.com/) - для контейнеризации.
-
-## Структура проекта
+## Project Structure
 
 ```
 shortybot/
@@ -101,8 +89,6 @@ shortybot/
 └── go.sum
 ```
 
----
+## License
 
-## Лицензия
-
-Проект распространяется под лицензией [**MIT**](https://mit-license.org/). Вы можете свободно использовать и модифицировать код при соблюдении условий лицензии.
+[**MIT**](https://mit-license.org/)
